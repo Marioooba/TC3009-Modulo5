@@ -2,11 +2,8 @@
 
 # Clasificación de severidad de osteoartritis de rodilla (Kellgren-Lawrence) con Deep Learning
 
-Proyecto de deep learning con **Keras + TensorFlow** que clasifica radiografías de rodilla según el grado de osteoartritis de la escala **Kellgren-Lawrence (K&L)**, de 0 (normal) a 4 (severo).
+Proyecto de deep learning con Keras + TensorFlow que clasifica radiografías de rodilla según el grado de osteoartritis de la escala **Kellgren-Lawrence**, de 0 (normal) a 4 (severo).
 
-> **Autor(es):** [COMPLETAR]
-> **Curso / Módulo:** [COMPLETAR]
-> **Notebook principal:** `knee_xray_kl_grading.ipynb`
 
 ---
 
@@ -14,7 +11,7 @@ Proyecto de deep learning con **Keras + TensorFlow** que clasifica radiografías
 
 La osteoartritis de rodilla afecta a millones de personas y su diagnóstico depende de que un radiólogo evalúe la radiografía. La escala K&L es el estándar para graduarla, pero la diferencia entre grados vecinos es sutil y subjetiva. Este proyecto entrena modelos de visión por computadora para **predecir el grado K&L a partir de la imagen**, como apoyo a un posible sistema de diagnóstico asistido.
 
-Es un problema de **clasificación multiclase (5 clases)**:
+Es un problema de clasificación multiclase (5 clases):
 
 | Grado | Clase |
 |---|---|
@@ -26,10 +23,9 @@ Es un problema de **clasificación multiclase (5 clases)**:
 
 ## 2. Dataset
 
-**Digital Knee X-ray Images** (Kaggle, `orvile/digital-knee-x-ray-images`, licencia CC BY 4.0): 1,650 radiografías digitales de rodilla en escala de grises, anotadas por dos expertos médicos (carpetas `MedicalExpert-I` y `MedicalExpert-II`).
+**Digital Knee X-ray Images** (https://www.kaggle.com/datasets/orvile/digital-knee-x-ray-images/data): 1,650 radiografías digitales de rodilla en escala de grises, anotadas por dos expertos médicos.
 
-- Se usó la anotación del **experto I**.
-- Se detectaron y eliminaron **17 imágenes duplicadas** (por hash del archivo), quedando **1,633 imágenes únicas**, para evitar fuga de datos entre entrenamiento y prueba.
+- Se detectaron y eliminaron **17 imágenes duplicadas**, quedando **1,633 imágenes únicas**, para evitar fuga de datos entre entrenamiento y prueba.
 - Distribución de clases (desbalanceada):
 
 | 0 Normal | 1 Dudoso | 2 Leve | 3 Moderado | 4 Severo |
@@ -43,33 +39,26 @@ Es un problema de **clasificación multiclase (5 clases)**:
 
 ```
 .
-├── knee_xray_kl_grading.ipynb   # Notebook con todo el flujo (datos, modelos, análisis, predicciones)
+├── knee_xray_kl_grading.ipynb 
 ├── requirements.txt
 └── README.md
 ```
 
-El dataset **no** se incluye en el repositorio; el notebook lo descarga con `kagglehub`.
+**El dataset se descarga desde Kagglehub**
 
 ## 4. Cómo ejecutarlo
-
-1. Clona el repositorio:
-   ```bash
-   git clone [URL DEL REPO]
-   cd [NOMBRE DEL REPO]
-   ```
-2. Instala dependencias:
-   ```bash
+1. Instalar dependencias:
+   bash
    pip install -r requirements.txt
-   ```
-3. Abre `knee_xray_kl_grading.ipynb` y ejecútalo de arriba hacia abajo. Se recomienda **GPU** (Google Colab o Kaggle) e **internet activado**, ya que el notebook descarga el dataset y los pesos preentrenados de MobileNetV2.
-4. Parámetros editables en la primera celda: `EXPERT` (`"I"`, `"II"` o `"consensus"`), `GROUP` (5 clases o agrupación en 3) y `IMG`/`BATCH`.
+2. Ejecuta `knee_xray_kl_grading.ipynb` utilizando Collab o un entorno con GPU.
+3. Parámetros editables en la primera celda: `EXPERT` (`"I"`, `"II"` o `"consensus"`), `GROUP` (5 clases o agrupación en 3) y `IMG`/`BATCH`.
 
 ## 5. Arquitecturas
 
 - **CNN desde cero:** bloques `Conv2D → BatchNorm → ReLU → MaxPooling`, `GlobalAveragePooling` y capas densas con salida `softmax` de 5 clases.
 - **MobileNetV2 (transfer learning):** base preentrenada en ImageNet, con la imagen en escala de grises replicada a 3 canales, seguida de `GlobalAveragePooling`, `Dropout` y capa `softmax`.
 
-Detalles de entrenamiento: optimizador Adam, pérdida `sparse_categorical_crossentropy`, **class weights** para compensar el desbalance, `EarlyStopping` y `ReduceLROnPlateau` sobre la pérdida de validación. El mejor modelo se elige por **macro-F1 de validación**, nunca por prueba.
+Detalles de entrenamiento: optimizador Adam, pérdida `sparse_categorical_crossentropy`, **class weights** para compensar el desbalance, `EarlyStopping` y `ReduceLROnPlateau` sobre la pérdida de validación. El mejor modelo se elige por **macro-F1 de validación**.
 
 ## 6. Experimentos y resultados
 
