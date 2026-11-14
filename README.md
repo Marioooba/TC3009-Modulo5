@@ -83,7 +83,7 @@ Detalles de entrenamiento: optimizador Adam, pérdida `sparse_categorical_crosse
 | 3 Moderado | 0.69 | 0.69 | 0.69 |
 | 4 Severo | 0.76 | 0.81 | 0.78 |
 
-Matriz de confusión, curvas de entrenamiento y ejemplos de predicción están en el notebook. [COMPLETAR: agregar imágenes a una carpeta `images/` y enlazarlas aquí]
+
 
 ## 7. Uso del modelo para predecir
 
