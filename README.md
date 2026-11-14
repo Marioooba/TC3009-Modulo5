@@ -53,7 +53,7 @@ Es un problema de clasificación multiclase (5 clases):
 2. Ejecuta `knee_xray_kl_grading.ipynb` utilizando Collab o un entorno con GPU.
 3. Parámetros editables en la primera celda: `EXPERT` (`"I"`, `"II"` o `"consensus"`), `GROUP` (5 clases o agrupación en 3) y `IMG`/`BATCH`.
 
-## 5. Arquitecturas
+## 5. Arquitectura
 
 - **CNN desde cero:** bloques `Conv2D → BatchNorm → ReLU → MaxPooling`, `GlobalAveragePooling` y capas densas con salida `softmax` de 5 clases.
 - **MobileNetV2 (transfer learning):** base preentrenada en ImageNet, con la imagen en escala de grises replicada a 3 canales, seguida de `GlobalAveragePooling`, `Dropout` y capa `softmax`.
@@ -85,32 +85,7 @@ Detalles de entrenamiento: optimizador Adam, pérdida `sparse_categorical_crosse
 
 Matriz de confusión, curvas de entrenamiento y ejemplos de predicción están en el notebook. [COMPLETAR: agregar imágenes a una carpeta `images/` y enlazarlas aquí]
 
-## 7. Análisis: qué funcionó y por qué
-
-- **Transfer learning fue el cambio que más mejoró el desempeño.** Con ~1,100 imágenes de entrenamiento, los *features* generales de ImageNet (bordes, texturas) aportan mucho más que aprender desde cero. Las CNN entrenadas desde cero no lograron aprender en las configuraciones probadas.
-- **El fine-tuning aportó una mejora moderada** (F1 de 0.59 a 0.63; QWK de 0.74 a 0.80) al adaptar las capas finales a las características de las radiografías sin destruir lo preentrenado. Con solo 245 imágenes de prueba, esta diferencia debe interpretarse con cautela.
-- **La regularización y el aumento de datos sobre la CNN desde cero no funcionaron**, probablemente por usar demasiada regularización a la vez sobre una red pequeña con pocos datos (subajuste). Por eso la búsqueda de hiperparámetros del experimento 3 no es concluyente. [COMPLETAR si se reentrenó la CNN con otra configuración]
-- **Los errores se concentran en grados vecinos**, como indica el QWK de 0.80. La clase más difícil es **1 Dudoso**, que se confunde con Normal y con Leve; esto es consistente con que la frontera entre los grados 0 y 1 es la más subjetiva incluso para especialistas.
-- **Manejo del desbalance:** class weights y métricas por clase (macro-F1, matriz de confusión) en lugar de accuracy únicamente.
-
-## 8. Limitaciones
-
-- El dataset **no incluye identificador de paciente**, por lo que no se puede garantizar que radiografías de un mismo paciente no estén repartidas entre entrenamiento y prueba.
-- Solo 245 imágenes de prueba: los resultados tienen un margen de error considerable.
-- Dataset de una sola fuente (mismo equipo de rayos X); la generalización a otros hospitales es incierta.
-- Las etiquetas del experto I y II pueden discrepar; se usó únicamente una anotación.
-- Este proyecto es **académico**: no es una herramienta clínica ni sustituye el criterio de un profesional de la salud.
-
-## 9. Trabajo futuro
-
-- Reentrenar la CNN desde cero con menos regularización y comparar contra transfer learning.
-- Ajustar hiperparámetros del modelo ganador (lr de fine-tuning, número de capas descongeladas).
-- Probar otras arquitecturas (EfficientNet, DenseNet121) y ensambles.
-- Agrupar a 3 clases (sano / leve / severo) con el parámetro `GROUP`.
-- Tratar el problema como **regresión u ordinal**, aprovechando el orden de los grados.
-- Incorporar la corrección recibida en la entrega intermedia. [COMPLETAR]
-
-## 10. Uso del modelo para predecir
+## 7. Uso del modelo para predecir
 
 Al final del notebook, la función `predict_image(ruta)` muestra la probabilidad de cada grado para una radiografía nueva:
 
