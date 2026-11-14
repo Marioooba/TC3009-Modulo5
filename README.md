@@ -69,7 +69,7 @@ Detalles de entrenamiento: optimizador Adam, pérdida `sparse_categorical_crosse
 | 3 | Búsqueda de lr × dropout sobre la CNN (4 combinaciones) | 0.127 – 0.290 | 0.045 – 0.090 | 0.000 – 0.022 |
 | 4 | MobileNetV2 con base congelada + aumento de datos | 0.592 | 0.591 | 0.739 |
 | 5 | **MobileNetV2 con fine-tuning (últimas ~30 capas, lr = 1e-5)** | **0.629** | **0.626** | **0.801** |
-| [COMPLETAR] | [Resultados de la CNN v2 u otros experimentos adicionales] | | | |
+
 
 **QWK** (Kappa cuadrático ponderado) penaliza más los errores entre grados lejanos, por lo que es una métrica adecuada para una escala ordinal como K&L.
 
